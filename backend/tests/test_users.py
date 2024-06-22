@@ -8,7 +8,8 @@ def delete_test_users():
     response = client.get("/api/v1/users/")
     users = response.json()
     for user in users:
-        client.delete(f"/api/v1/users/{user['id']}")
+        if user["id"] != 1:
+            client.delete(f"/api/v1/users/{user['id']}")
 
 @pytest.fixture(scope="module")
 def create_test_user():

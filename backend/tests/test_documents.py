@@ -14,8 +14,9 @@ def delete_test_users_and_documents():
                 if project["documents"]:
                     for document in project["documents"]:
                         client.delete(f"/api/v1/documents/{document['id']}")
-        user_id = user["id"]
-        client.delete(f"/api/v1/users/{user_id}")
+        if user["id"] != 1:
+            user_id = user["id"]
+            client.delete(f"/api/v1/users/{user_id}")
 
 @pytest.fixture(scope="module")
 def create_test_user_and_project():

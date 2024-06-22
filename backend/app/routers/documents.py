@@ -48,7 +48,7 @@ async def upload_file(project_id: int, file: UploadFile = File(...), db: Session
         raise HTTPException(status_code=404, detail="Project not found")
 
     db_user = crud.get_user(db, user_id=db_project.owner_id)
-    unique_filename = f"{db_user.email}_{file.filename}"
+    unique_filename = f"{project_id}_{db_user.email}_{file.filename}"
     file_location = os.path.join(DOCUMENTS_FOLDER, unique_filename)
     
     with open(file_location, "wb") as file_object:
