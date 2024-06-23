@@ -3,6 +3,8 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List
 import os
+import time
+import random
 from .. import crud, models, schemas
 from ..database import get_db
 
@@ -20,7 +22,10 @@ def read_document(document_id: int, db: Session = Depends(get_db)):
     db_document = crud.get_document(db, document_id=document_id)
     if db_document is None:
         raise HTTPException(status_code=404, detail="Document not found")
-    return db_document
+    db_project = crud.get_project(db, project_id=db_document.project_id)
+    document_data = schemas.Document.from_orm(db_document).dict()
+    document_data["project"] = schemas.Project.from_orm(db_project).dict()
+    return document_data
 
 @router.get("/documents/{document_id}/file", response_class=FileResponse)
 def get_document_file(document_id: int, db: Session = Depends(get_db)):
@@ -34,42 +39,61 @@ def get_document_file(document_id: int, db: Session = Depends(get_db)):
     
     return FileResponse(path=file_path, filename=db_document.name, media_type='application/pdf')
 
-@router.post("/documents/{project_id}/", response_model=schemas.Document)
-def create_document_for_project(project_id: int, document: schemas.DocumentCreate, db: Session = Depends(get_db)):
-    db_project = crud.get_project(db, project_id=project_id)
-    if db_project is None:
-        raise HTTPException(status_code=404, detail="Project not found")
-    return crud.create_document(db=db, document=document, user_id=db_project.owner_id)
-
 @router.post("/documents/upload/{project_id}/")
-async def upload_file(project_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def upload_file(
+    project_id: int, 
+    file: UploadFile = File(...), 
+    db: Session = Depends(get_db)
+):
     db_project = crud.get_project(db, project_id=project_id)
     if db_project is None:
         raise HTTPException(status_code=404, detail="Project not found")
 
     db_user = crud.get_user(db, user_id=db_project.owner_id)
-    unique_filename = f"{project_id}_{db_user.email}_{file.filename}"
+    timestamp = int(time.time())
+    unique_filename = f"{project_id}_{db_user.email}_{timestamp}_{file.filename}"
     file_location = os.path.join(DOCUMENTS_FOLDER, unique_filename)
     
     with open(file_location, "wb") as file_object:
         file_object.write(await file.read())
 
+    criteria_names = [
+        "Relevance to Critical Technology Areas",
+        "Impact and Value",
+        "Innovation",
+        "Connection to U.S DoD Programs",
+        "Commercial Potential",
+        "Technical Feasibility"
+    ]
+
     metadata = {
-        "criteria_1": {"score": 35, "justification": "Justification for the score"},
-        "criteria_2": {"score": 45, "justification": "Justification for the score"},
-        "criteria_3": {"score": 35, "justification": "Justification for the score"},
-        "criteria_4": {"score": 45, "justification": "Justification for the score"},
-        "criteria_5": {"score": 30, "justification": "Justification for the score"},
-        "criteria_6": {"score": 30, "justification": "Justification for the score"},
+        f"criteria_{i+1}": {
+            "name": criteria_names[i],
+            "score": random.randint(20, 100),
+            "justification": f"Justification for {criteria_names[i]}",
+            "weightage": round(random.uniform(0.1, 0.5), 2)
+        } for i in range(6)
     }
+
+    result_summary = [
+        {
+            "name": criteria_names[i],
+            "score": metadata[f"criteria_{i+1}"]["score"],
+            "weightage": metadata[f"criteria_{i+1}"]["weightage"]
+        } for i in range(6)
+    ]
+
+    overall_score = int(sum([criterion["score"] for criterion in metadata.values()]) / len(criteria_names))
 
     document = schemas.DocumentCreate(
         name=unique_filename,
-        overall_score=40,
+        overall_score=overall_score,
         summary="Document summary here",
         feedback="Our feedback here",
         assessment_data=metadata,
-        project_id=project_id
+        result_summary=result_summary,
+        project_id=project_id,
+        user_id=db_project.owner_id
     )
 
     return crud.create_document(db=db, document=document, user_id=db_project.owner_id)

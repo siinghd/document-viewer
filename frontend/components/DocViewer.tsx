@@ -24,10 +24,7 @@ const maxWidth = 800;
 
 type PDFFile = string | File | null;
 
-export default function DocViewer() {
-  const [file, setFile] = useState<PDFFile>(
-    'http://localhost:5001/api/v1/documents/1/file'
-  );
+export default function DocViewer({ id }: { id: number }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [numPages, setNumPages] = useState<number>();
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
@@ -53,15 +50,13 @@ export default function DocViewer() {
   };
 
   const goToNextPage = () => {
-    console.log(numPages);
     setCurrentPage((prevPage) => Math.min(prevPage + 1, (numPages ?? 1) - 1));
   };
-
   return (
     <div className="Example max-h-[813px] overflow-y-scroll">
       <div ref={setContainerRef}>
         <Document
-          file={file}
+          file={`${process.env.NEXT_PUBLIC_API_URL}/v1/documents/${id}/file`}
           onLoadSuccess={onDocumentLoadSuccess}
           options={options}
         >

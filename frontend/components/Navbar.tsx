@@ -1,114 +1,49 @@
+import { ChevronDownIcon, UserIcon } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
 const Navbar = () => {
   return (
-    <nav
-      className="px-4 flex items-center justify-between  h-[69px]  py-4 bg-gradient-to-b from-[#1104F3] to-[#0EDEF9] text-white xl:px-[218px]"
-      style={{ gap: '10px' }}
-    >
-      <div className="flex items-center space-x-2 ">
-        <Image
-          src="/images/logo.png"
-          alt="logo"
-          width={213}
-          height={30}
-          className="cursor-pointer"
-        />
-
-        <span className="text-sm">{'> '} Tally</span>
-      </div>
-
-      <div className=" hidden md:flex items-center space-x-8 sm:hidden ">
-        <div className="relative">
-          <a href="#" className="text-sm nav-item">
-            Home
-          </a>
-          <span className=""></span>
+    <header className="flex flex-col items-center px-16 pt-3.5 w-full text-base bg-[linear-gradient(180deg,#1104F3_-1.61%,#0EDEF9_135.26%)] max-md:px-5 max-md:max-w-full xl:px-[218px]">
+      <div className="flex gap-5 justify-between items-start w-full max-w-[1489px] max-md:flex-wrap max-md:max-w-full">
+        <div className="flex gap-2.5 items-center mt-1.5 tracking-normal text-white whitespace-nowrap">
+          <Image
+            src="/images/logo.png"
+            alt="logo"
+            width={152}
+            height={30}
+            className="cursor-pointer"
+          />
+          <div className="self-stretch my-auto">&gt;</div>
+          <div className="self-stretch my-auto">Tally</div>
         </div>
-        <div className="relative">
-          <a href="#" className="text-sm nav-item">
-            All Projects
-          </a>
-          <span className=""></span>
-        </div>
-        <div className="relative">
-          <a
-            href="#"
-            className="relative z-10 px-4 py-2 text-sm bg-white text-blue-600 rounded-md nav-item active"
-          >
-            Project View
-          </a>
-          <span className="extra-active-nav"></span>
+        <nav className="flex gap-5 self-stretch space">
+          <div className="my-auto tracking-normal text-white">Home</div>
+          <div className="flex flex-auto gap-5 justify-between">
+            <div className="my-auto tracking-normal text-white">
+              All Projects
+            </div>
+            <div className="flex overflow-hidden relative flex-col justify-center px-10 py-5 font-bold text-sky-500 aspect-[3] fill-white max-md:px-5 -mb-[2px]">
+              <Image
+                loading="lazy"
+                src="/images/bg-navbar.png"
+                className="object-cover absolute inset-0 size-full"
+                alt=""
+                width={168}
+                height={56}
+              />
+              <span className="text-[#1090F7] z-10 mt-6">Project View</span>P
+            </div>
+          </div>
+        </nav>
+        <div className="flex gap-3.5 items-center mt-2 text-white whitespace-nowrap">
+          <UserIcon className="h-6 w-6" />
+          <div className="self-stretch my-auto">Purvaja</div>
+          <ChevronDownIcon className="h-4 w-4" />
         </div>
       </div>
-      <div className="flex items-center space-x-2">
-        <UserIcon className="h-6 w-6" />
-        <span className="text-sm">Purvaja</span>
-        <ChevronDownIcon className="h-4 w-4" />
-      </div>
-    </nav>
+    </header>
   );
 };
 
 export default Navbar;
-
-function ChevronDownIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
-}
-
-function LogInIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-      <polyline points="10 17 15 12 10 7" />
-      <line x1="15" x2="3" y1="12" y2="12" />
-    </svg>
-  );
-}
-
-function UserIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
