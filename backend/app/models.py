@@ -1,6 +1,16 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON, DateTime, func
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON, DateTime, func, Enum
 from sqlalchemy.orm import relationship
 from .database import Base
+import enum
+
+
+class DocumentStatus(enum.Enum):
+    PENDING = "Pending"
+    EVALUATING = "Evaluating"
+    EVALUATED = "Evaluated"
+    NEEDS_REVIEW = "Needs Review"
+    APPROVED = "Approved"
+    REJECTED = "Rejected"
 
 class User(Base):
     __tablename__ = "users"
@@ -37,9 +47,10 @@ class Document(Base):
     assessment_data = Column(JSON)
     result_summary = Column(JSON)
     project_id = Column(Integer, ForeignKey("projects.id"))
-    user_id = Column(Integer, ForeignKey("users.id"))  
+    user_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    status = Column(Enum(DocumentStatus), default=DocumentStatus.PENDING)
 
     project = relationship("Project", back_populates="documents")
-    user = relationship("User", back_populates="documents")  
+    user = relationship("User", back_populates="documents")

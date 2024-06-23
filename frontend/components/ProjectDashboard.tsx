@@ -6,7 +6,7 @@ import SubmissionQualityItem from './SubmissionQualityItem';
 const ProjectDashboard = ({ documents, stats }: any) => {
   return (
     <Fragment>
-      <section className="flex gap-2 justify-between mt-6 ml-3.5 max-md:flex-wrap max-md:max-w-full max-h-[86px]">
+      <section className="flex gap-2 justify-between mt-6 ml-3.5 max-md:flex-wrap w-full max-h-[86px]">
         <div className="flex flex-col justify-center px-14 py-4 text-white whitespace-nowrap rounded-lg bg-[linear-gradient(172deg,#1104F3_-1.61%,#0EDEF9_125.26%)] max-md:px-5">
           <div className="self-center text-sm font-medium tracking-wide">
             Total
@@ -107,7 +107,7 @@ const ProjectDashboard = ({ documents, stats }: any) => {
             <ArrowUpDown className="w-4 h-4 text-sky-500" />
           </button>
           <div className="flex gap-1.5 px-4 py-2 text-xs font-medium whitespace-nowrap bg-white rounded-md text-zinc-500">
-            <Search className="w-4 h-4 " />
+            <Search className="w-4 h-4 text-gray-500" />
 
             <span>Search</span>
           </div>

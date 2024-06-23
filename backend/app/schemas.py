@@ -37,26 +37,11 @@ class DocumentBase(BaseModel):
     feedback: str
     assessment_data: AssessmentData
     result_summary: List[Dict[str, Any]]
+    status: str  
 
 class DocumentCreate(DocumentBase):
     project_id: int
     user_id: int
-
-class Document(DocumentBase):
-    id: int
-    project_id: int
-    user_id: int
-    created_at: datetime
-    updated_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
-
-class ReducedDocument(BaseModel):
-    id: int
-    name: str
-    overall_score: int
-
-    model_config = ConfigDict(from_attributes=True)
 
 class UserBase(BaseModel):
     email: str
@@ -65,12 +50,38 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
+class UserSummary(BaseModel):
+    id: int
+    email: str
+    fullname: str
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
 class User(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
     projects: List[Project] = []
-    documents: List[Document] = []
+    documents: List["ReducedDocument"] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
+class Document(DocumentBase):
+    id: int
+    project_id: int
+    user_id: int
+    created_at: datetime
+    updated_at: datetime
+    user: Optional[UserSummary] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ReducedDocument(BaseModel):
+    id: int
+    name: str
+    overall_score: int
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -87,3 +98,13 @@ class ProjectStats(BaseModel):
     submission_quality: Dict[str, int]
     submission_quality_detail: Dict[str, int]
     number_of_documents: int
+
+class PaginatedDocuments(BaseModel):
+    total_documents: int
+    total_pages: int
+    current_page: int
+    next_page: Optional[int]
+    prev_page: Optional[int]
+    documents: List[Document]
+
+    model_config = ConfigDict(from_attributes=True)

@@ -1,5 +1,6 @@
 import Footer from '@/components/Footer';
 import ProjectDashboard from '@/components/ProjectDashboard';
+import ProjectSubmissions from '@/components/ProjectSubmissions';
 
 import { getUpdatedUrl } from '@/lib/functions';
 
@@ -40,10 +41,19 @@ const ProjectPage = async ({
     ]);
 
     [data, stats] = await Promise.all([document.json(), statsData.json()]);
+  } else if (searchParams.tabType === TabType.submissions) {
+    const document = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/projects/${
+        jsonProject.id
+      }/documents?limit=${searchParams.limit ?? 15}&skip=${
+        (searchParams.page ?? 1) - 1
+      }`
+    );
+    data = await document.json();
   }
-  if (!data || !stats) {
-    return redirect(`/projects`);
-  }
+  //   if (!data || !stats) {
+  //     return redirect(`/projects`);
+  //   }
 
   return (
     <div className="flex flex-col bg-white">
@@ -110,6 +120,9 @@ const ProjectPage = async ({
         {(searchParams.tabType === undefined ||
           searchParams.tabType === TabType.dashboard) && (
           <ProjectDashboard documents={data} stats={stats} />
+        )}
+        {searchParams.tabType === TabType.submissions && (
+          <ProjectSubmissions documents={data} />
         )}
       </main>
       <Footer />

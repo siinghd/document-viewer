@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from . import models, schemas
-
+import random
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
@@ -8,7 +8,7 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 def create_user(db: Session, user: schemas.UserCreate):
-    hashed_password = user.password  # In production, hash the password
+    hashed_password = user.password  # Hash the password here, for production
     db_user = models.User(email=user.email, fullname=user.fullname, hashed_password=hashed_password)
     db.add(db_user)
     db.commit()
@@ -40,10 +40,17 @@ def create_project(db: Session, project: schemas.ProjectCreate, user_id: int):
     return db_project
 
 def get_documents_for_project(db: Session, project_id: int, skip: int = 0, limit: int = 10):
-    return db.query(models.Document).filter(models.Document.project_id == project_id).offset(skip).limit(limit).all()
+    return (
+        db.query(models.Document)
+        .filter(models.Document.project_id == project_id)
+        .options(joinedload(models.Document.user))
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 def get_document(db: Session, document_id: int):
-    return db.query(models.Document).filter(models.Document.id == document_id).first()
+    return db.query(models.Document).filter(models.Document.id == document_id).options(joinedload(models.Document.user)).first()
 
 def get_documents(db: Session, skip: int = 0, limit: int = 10):
     return db.query(models.Document).offset(skip).limit(limit).all()
@@ -57,7 +64,8 @@ def create_document(db: Session, document: schemas.DocumentCreate, user_id: int)
         assessment_data=document.assessment_data.model_dump(),
         result_summary=document.result_summary,
         project_id=document.project_id,
-        user_id=user_id
+        user_id=user_id,
+        status=random.choice(["Pending", "Evaluating", "Evaluated", "Needs Review", "Approved", "Rejected"])
     )
     db.add(db_document)
     db.commit()

@@ -39,3 +39,31 @@ export const getColorForScore = (score: number, type = 'bg') => {
   const index = Math.floor(score / 10);
   return type === 'bg' ? bgColors[index] : textColors[index];
 };
+
+export const getRating = (score: number) => {
+  if (score < 0 || score > 100) {
+    throw new Error('Score must be between 0 and 100');
+  }
+
+  if (score >= 0 && score <= 10) {
+    return 'Needs Improvement';
+  } else if (score > 10 && score <= 20) {
+    return 'Poor';
+  } else if (score > 20 && score <= 30) {
+    return 'Fair';
+  } else if (score > 30 && score <= 40) {
+    return 'Below Average';
+  } else if (score > 40 && score <= 50) {
+    return 'Average';
+  } else if (score > 50 && score <= 60) {
+    return 'Above Average';
+  } else if (score > 60 && score <= 70) {
+    return 'Good';
+  } else if (score > 70 && score <= 80) {
+    return 'Very Good';
+  } else if (score > 80 && score <= 90) {
+    return 'Excellent';
+  } else if (score > 90 && score <= 100) {
+    return 'Outstanding';
+  }
+};
