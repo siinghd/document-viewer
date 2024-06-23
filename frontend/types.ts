@@ -10,4 +10,5 @@ export interface QueryParams {
   tabType?: TabType;
   search?: string;
   date?: string;
+  displayType?: 'list' | 'grid';
 }

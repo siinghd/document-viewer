@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, FastAPI, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, BackgroundTasks
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List
@@ -7,8 +7,10 @@ import time
 import random
 from .. import crud, models, schemas
 from ..database import get_db
-import asyncio
-app = FastAPI()
+router = APIRouter()
+
+DOCUMENTS_FOLDER = "static/documents"
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 async def process_document(document_id: int, db: Session):
     document = db.query(models.Document).filter(models.Document.id == document_id).first()
@@ -17,9 +19,8 @@ async def process_document(document_id: int, db: Session):
         print(f"Document with id {document_id} not found.")
         return
 
-    await asyncio.sleep(5)  #  Simulate processing time of 5 seconds, remove this line in production
 
-    document.status = models.DocumentStatus.EVALUATING
+    document.status = models.DocumentStatus.PENDING
     db.commit()
     db.refresh(document)
 
@@ -59,10 +60,6 @@ async def process_document(document_id: int, db: Session):
     db.commit()
     db.refresh(document)
 
-router = APIRouter()
-
-DOCUMENTS_FOLDER = "static/documents"
-
 @router.get("/documents/", response_model=List[schemas.Document])
 def read_documents(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     documents = crud.get_documents(db, skip=skip, limit=limit)
@@ -97,6 +94,11 @@ async def upload_file(
     db: Session = Depends(get_db),
     background_tasks: BackgroundTasks = BackgroundTasks()
 ):
+    file_content = await file.read()
+    if len(file_content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=413, detail="File size exceeds the maximum limit of 10 MB.")
+    
+
     db_project = crud.get_project(db, project_id=project_id)
     if db_project is None:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -107,7 +109,7 @@ async def upload_file(
     file_location = os.path.join(DOCUMENTS_FOLDER, unique_filename)
     
     with open(file_location, "wb") as file_object:
-        file_object.write(await file.read())
+        file_object.write(file_content)
 
     document = models.Document(
         name=unique_filename,
@@ -144,4 +146,3 @@ def delete_document(document_id: int, db: Session = Depends(get_db)):
     db.delete(db_document)
     db.commit()
     return db_document
-

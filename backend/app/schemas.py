@@ -37,7 +37,7 @@ class DocumentBase(BaseModel):
     feedback: str
     assessment_data: AssessmentData
     result_summary: List[Dict[str, Any]]
-    status: str  
+    status: str
 
 class DocumentCreate(DocumentBase):
     project_id: int
@@ -75,6 +75,7 @@ class Document(DocumentBase):
     created_at: datetime
     updated_at: datetime
     user: Optional[UserSummary] = None
+    project: Optional[Project] = None  # Add this line
 
     model_config = ConfigDict(from_attributes=True)
 

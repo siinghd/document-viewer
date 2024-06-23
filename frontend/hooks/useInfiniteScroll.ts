@@ -25,13 +25,13 @@ const useInfiniteScroll = <T>(
     }
 
     setTimeout(() => {
-      const nextBatch = data
+      const nextBatch = (data as any)
         .slice(loadedItemsRef.current.size)
-        .filter((item) => !loadedItemsRef.current.has(item))
+        .filter((item: any) => !loadedItemsRef.current.has(item.id))
         .slice(0, itemsPerBatch);
 
       setDisplayedItems((prevItems) => [...prevItems, ...nextBatch]);
-      nextBatch.forEach((item) => loadedItemsRef.current.add(item));
+      nextBatch.forEach((item: any) => loadedItemsRef.current.add(item.id));
 
       if (loadedItemsRef.current.size >= data.length) {
         setHasMore(false);

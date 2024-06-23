@@ -8,131 +8,55 @@ import {
   Search,
   Trash,
 } from 'lucide-react';
+import dayjs from 'dayjs';
+import SubmissionCard from './SubmissionCard';
+import Pagination from './Pagination';
+import Link from 'next/link';
+import { getUpdatedUrl } from '@/lib/functions';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import Image from 'next/image';
+import { getColorForScore, getRating } from '@/lib/utils';
+import { FileUpload } from './FileUpload';
 
-type SubmissionCardProps = {
-  status: string;
-  name: string;
-  date: string;
-  uploadProgress?: string;
-  evaluationStatus?: string;
-};
-
-const SubmissionCard: React.FC<SubmissionCardProps> = ({
-  status,
-  name,
-  date,
-  uploadProgress,
-  evaluationStatus,
-}) => {
-  const getStatusColor = (status: string) => {
-    const statusColors: { [key: string]: string } = {
-      'Very Poor': 'text-rose-600 bg-pink-100',
-      Poor: 'text-red-500 bg-rose-100',
-      'Needs Improvement': 'text-amber-500 bg-yellow-50',
-      Fair: 'text-orange-500 bg-yellow-50',
-      Average: 'text-purple-500 bg-purple-100',
-      'Above Average': 'text-indigo-500 bg-violet-100',
-      Good: 'text-blue-500 bg-sky-100',
-      'Very Good': 'text-cyan-500 bg-sky-100',
-      Excellent: 'text-emerald-500 bg-green-100',
-    };
-    return statusColors[status] || 'text-black bg-gray-100';
-  };
-
-  return (
-    <div className="flex flex-col justify-center">
-      <div className="flex flex-col px-2.5 py-3.5 w-full rounded-md bg-neutral-100">
-        <div className="flex justify-center items-center text-xs font-semibold bg-gray-200 rounded-md">
-          <div className="flex overflow-hidden relative flex-col items-end px-16 pt-1.5 pb-20 aspect-[1.77] w-[214px] max-md:pl-5">
-            <img
-              loading="lazy"
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/f79bc9789c45b5f9935321e54a646b96f4ffb7b0b822cc0e8e6451eae6ae5eba?apiKey=4709da0204584435855723131531442a&"
-              className="object-cover absolute inset-0 size-full"
-              alt={`${name}'s submission`}
-            />
-            <div
-              className={`relative justify-center px-6 py-1.5 mb-3 rounded-xl max-md:px-5 ${getStatusColor(
-                status
-              )}`}
-            >
-              {status}
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-5 justify-between py-px mt-2 w-full text-center">
-          <div className="flex gap-1">
-            <img
-              loading="lazy"
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/12bc9ecf40549efbf098cb2150fda091db644e874cbb31e68089184529400129?apiKey=4709da0204584435855723131531442a&"
-              className="shrink-0 my-auto w-5 aspect-[1.05]"
-              alt={`${name}'s avatar`}
-            />
-            <div className="flex flex-col">
-              <div className="text-xs text-black">{name}</div>
-              <div className="text-xs text-neutral-500">
-                {uploadProgress
-                  ? `Uploading : ${uploadProgress}`
-                  : evaluationStatus || ''}
-              </div>
-            </div>
-          </div>
-          <div className="my-auto text-xs text-black">{date}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-type PaginationButtonProps = {
-  children: React.ReactNode;
-  active?: boolean;
-  disabled?: boolean;
-};
-
-const PaginationButton: React.FC<PaginationButtonProps> = ({
-  children,
-  active,
-  disabled,
-}) => {
-  const baseClasses = 'justify-center items-center p-2.5 bg-white rounded-lg';
-  const activeClasses =
-    'text-white bg-sky-500 border border-sky-500 border-solid';
-  const disabledClasses = 'text-stone-300';
-  const normalClasses = 'border border-solid border-zinc-100';
-
-  let classes = baseClasses;
-  if (active) classes += ` ${activeClasses}`;
-  else if (disabled) classes += ` ${disabledClasses}`;
-  else classes += ` ${normalClasses}`;
-
-  return (
-    <button className={classes} disabled={disabled}>
-      {children}
-    </button>
-  );
-};
-
-const ProjectSubmissions = ({ documents }: any) => {
+const ProjectSubmissions = ({ documents, searchParams, projectId }: any) => {
+  if (!searchParams.displayType) searchParams.displayType = 'grid';
   return (
     <Fragment>
       <div className="flex gap-5 justify-between mt-10 w-full max-md:flex-wrap max-md:max-w-full">
         <div className="flex gap-2">
           <button className="flex flex-col justify-center text-sm text-center text-sky-500">
-            <div className="justify-center px-12 py-4 bg-sky-100 rounded-md border border-sky-500 border-solid max-md:px-5">
-              Upload More Data
-            </div>
+            <FileUpload projectId={projectId} />
           </button>
           <button className="flex justify-center items-center px-3.5 bg-white rounded-md h-[54px] w-[54px]">
             <Search className="w-5 h-5 text-gray-500" />
           </button>
         </div>
         <div className="flex gap-3">
-          <button className="flex justify-center items-center px-3.5 bg-white rounded-md h-[54px] w-[54px]">
+          <Link
+            href={getUpdatedUrl(`/projects/${projectId}`, searchParams, {
+              displayType: 'list',
+            })}
+            className={`flex justify-center items-center px-3.5  rounded-md h-[54px] w-[54px] ${
+              searchParams.displayType === 'list'
+                ? 'bg-sky-100 border-sky-500 '
+                : 'bg-white'
+            }`}
+          >
             <List className="w-5 h-5 text-gray-500" />
-          </button>
-          <button className="flex justify-center items-center px-3 bg-sky-100 rounded-md border border-sky-500 border-solid h-[54px] w-[54px]">
+          </Link>
+          <Link
+            href={getUpdatedUrl(`/projects/${projectId}`, searchParams, {
+              displayType: 'grid',
+            })}
+            className={`flex justify-center items-center px-3 rounded-md border border-solid h-[54px] w-[54px] ${
+              searchParams.displayType === 'grid'
+                ? 'bg-sky-100 border-sky-500 '
+                : 'bg-white'
+            }`}
+          >
             <LayoutGrid className="w-5 h-5 text-gray-500" />
-          </button>
+          </Link>
           <button className="flex justify-center items-center p-3 bg-white rounded-md h-[54px] w-[54px]">
             <ArrowUpDown className="w-5 h-5 text-gray-500" />
           </button>
@@ -147,35 +71,103 @@ const ProjectSubmissions = ({ documents }: any) => {
           </div>
         </div>
       </div>
+
       <p className="mt-4 text-xs text-center text-black max-md:max-w-full">
         Upload PDF upto 10MB
       </p>
-      <section
-        className={`mt-5 ${
-          true
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5'
-            : 'flex flex-col gap-5'
-        }`}
-      >
-        {documents.documents.map((document: any) => (
-          <SubmissionCard
-            key={document.id}
-            status="Very Poor"
-            name="Purvija Deshmukh"
-            date="May 25, 2024"
-            evaluationStatus="70%"
-          />
-        ))}
-      </section>
-      <nav className="flex gap-1.5 self-start text-sm font-semibold whitespace-nowrap text-zinc-800">
-        <PaginationButton disabled>Prev</PaginationButton>
-        <PaginationButton>1</PaginationButton>
-        <PaginationButton active>2</PaginationButton>
-        <PaginationButton>3</PaginationButton>
-        <PaginationButton>...</PaginationButton>
-        <PaginationButton>10</PaginationButton>
-        <PaginationButton>Next</PaginationButton>
-      </nav>
+      {searchParams.displayType === 'grid' ? (
+        <section
+          className={`mt-5 ${
+            true
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5'
+              : 'flex flex-col gap-5'
+          }`}
+        >
+          {documents.documents.map((document: any) => (
+            <SubmissionCard
+              key={document.id}
+              docid={document.id}
+              projectId={document.project_id}
+              score={document.overall_score}
+              name={document.user.fullname}
+              date={dayjs(document.created_at).format('h:mmA M/D/YY')}
+              evaluationStatus={document.status}
+            />
+          ))}
+        </section>
+      ) : (
+        <div className="overflow-x-auto w-full mt-6">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-sm text-black-500 uppercase tracking-wider font-medium pl-0"
+                >
+                  Document Name
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-sm font-medium text-black-500 ppercase tracking-wider pl-0"
+                >
+                  Date
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-sm font-medium text-black-500 uppercase tracking-wider pl-0"
+                >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-sm font-medium text-black-500uppercase tracking-wider pl-0"
+                >
+                  Score
+                </th>
+              </tr>
+            </thead>
+            <tbody className=" divide-y divide-gray-200">
+              {documents.documents.map((doc: any, index: number) => {
+                const rating = getRating(doc.overall_score);
+                const bgColor = getColorForScore(doc.overall_score);
+                return (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap flex items-center pl-0">
+                      <Image
+                        loading="lazy"
+                        src="/images/pdficon.png"
+                        className="shrink-0 my-auto w-5 aspect-[1.05]"
+                        alt={`${doc.name}'s avatar`}
+                        width={20}
+                        height={19}
+                      />
+                      <span className="ml-4">{doc.user.fullname}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap pl-0">
+                      {dayjs(doc.created_at).format('h:mmA M/D/YY')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-500 pl-0">
+                      {doc.status}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap pl-0">
+                      <Badge
+                        className={`m-auto relative justify-center  py-1.5 mb-3 rounded-xl ${bgColor.replace(
+                          '500',
+                          '100'
+                        )} ${bgColor.replace('bg', 'text')}`}
+                      >
+                        {rating}
+                      </Badge>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <Pagination dataLength={documents.documents.length} />
     </Fragment>
   );
 };

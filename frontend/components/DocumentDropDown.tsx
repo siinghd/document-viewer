@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 
 export function DocumentDropDown({
   currentDocument,
@@ -17,13 +18,21 @@ export function DocumentDropDown({
   currentDocument: any;
   documents: any;
 }) {
+  const { displayedItems, hasMore, loadingRef } = useInfiniteScroll<any>(
+    documents,
+    {
+      itemsPerBatch: 1000, // adjust in production
+      loadingDelay: 500,
+    }
+  );
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button>{currentDocument.name}</button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {documents.map((doc: any) => (
+      <DropdownMenuContent className="max-h-60 overflow-auto">
+        {displayedItems.map((doc: any) => (
           <Link
             key={doc.id}
             href={`/projects/${currentDocument.project.id}/${doc.id}`}
@@ -33,6 +42,11 @@ export function DocumentDropDown({
             </DropdownMenuRadioItem>
           </Link>
         ))}
+        {/* {hasMore && (
+          <div ref={loadingRef} className="flex justify-center py-2">
+            <Loader className="text-secondary w-8" />
+          </div>
+        )} */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

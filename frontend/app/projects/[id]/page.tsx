@@ -122,7 +122,11 @@ const ProjectPage = async ({
           <ProjectDashboard documents={data} stats={stats} />
         )}
         {searchParams.tabType === TabType.submissions && (
-          <ProjectSubmissions documents={data} />
+          <ProjectSubmissions
+            documents={data}
+            searchParams={searchParams}
+            projectId={jsonProject.id}
+          />
         )}
       </main>
       <Footer />

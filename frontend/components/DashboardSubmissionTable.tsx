@@ -25,14 +25,14 @@ const DashboardSubmissionTable = ({ documents }: any) => {
               <TableHead>Submission Time</TableHead>
               <TableHead>Overall Score</TableHead>
               <TableHead>Overall Rating</TableHead>
-              {documents[0].result_summary.map((result: any) => (
+              {documents.documents[0].result_summary.map((result: any) => (
                 <TableHead key={result.name}>{result.name}</TableHead>
               ))}
               <TableHead>Add to shortlist</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white ">
-            {documents.map((document: any) => (
+            {documents.documents.map((document: any) => (
               <TableRow className="border-none" key={document.id}>
                 <TableCell>{document.user.fullname}</TableCell>
                 <TableCell>
