@@ -46,7 +46,7 @@ const ProjectPage = async ({
       `${process.env.NEXT_PUBLIC_API_URL}/v1/projects/${
         jsonProject.id
       }/documents?limit=${searchParams.limit ?? 15}&skip=${
-        (searchParams.page ?? 1) - 1
+        ((searchParams.page ?? 1) - 1) * (searchParams.limit ?? 15)
       }`
     );
     data = await document.json();

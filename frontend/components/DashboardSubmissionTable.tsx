@@ -4,12 +4,11 @@ import {
   TableRow,
   TableHead,
   TableBody,
-  TableCell,
 } from '@/components/ui/table';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import React from 'react';
-import dayjs from 'dayjs';
-import { getColorForScore, getRating } from '@/lib/utils';
+
+import TableRowDashBoardClicable from './table/TableRowDashBoardClicable';
 const DashboardSubmissionTable = ({ documents }: any) => {
   return (
     <div className="overflow-x-auto">
@@ -33,28 +32,10 @@ const DashboardSubmissionTable = ({ documents }: any) => {
           </TableHeader>
           <TableBody className="bg-white ">
             {documents.documents.map((document: any) => (
-              <TableRow className="border-none" key={document.id}>
-                <TableCell>{document.user.fullname}</TableCell>
-                <TableCell>
-                  {dayjs(document.created_at).format('h:mmA M/D/YY')}
-                </TableCell>
-                <TableCell>{document.overall_score}</TableCell>
-                <TableCell>{getRating(document.overall_score)}</TableCell>
-                {document.result_summary.map((result: any) => {
-                  const scoreColor = getColorForScore(result.score);
-                  return (
-                    <TableCell key={result.name}>
-                      <span
-                        className={`block w-3 h-3 ${scoreColor} rounded-full `}
-                      />
-                    </TableCell>
-                  );
-                })}
-
-                <TableCell>
-                  <Checkbox defaultChecked />
-                </TableCell>
-              </TableRow>
+              <TableRowDashBoardClicable
+                document={document}
+                key={document.id}
+              />
             ))}
           </TableBody>
         </Table>

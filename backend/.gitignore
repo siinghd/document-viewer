@@ -115,3 +115,5 @@ dmypy.json
 
 # Pycharm
 .idea/
+
+static/*

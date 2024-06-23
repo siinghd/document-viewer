@@ -1,12 +1,17 @@
 import AssessmentCriteria from '@/components/AssessmentCriteria';
 import { DocumentDropDown } from '@/components/DocumentDropDown';
-import DocViewer from '@/components/DocViewer';
+
 import ResultItem from '@/components/ResultItem';
 import ScoreCard from '@/components/ScoreCard';
 import { getColorForScore } from '@/lib/utils';
 import { ChevronRight, ChevronDown } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import * as React from 'react';
+const DocViewer = dynamic(() => import('@/components/DocViewer'), {
+  ssr: false,
+});
 
 export const revalidate = 1;
 
@@ -33,7 +38,9 @@ const DocumentPage = async ({
             <div className="flex flex-col xl:w-[70%] max-md:ml-0 w-full">
               <div className="flex flex-col grow max-md:mt-9 max-md:max-w-full">
                 <div className="flex gap-5 items-start self-start text-base text-zinc-700">
-                  <h1 className="grow self-stretch">{data.project.name}</h1>
+                  <Link href={`/projects/${data.project.id}`}>
+                    <h1 className="grow self-stretch">{data.project.name}</h1>
+                  </Link>
 
                   <ChevronRight className="h-6 w-6" />
 

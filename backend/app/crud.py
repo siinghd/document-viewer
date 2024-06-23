@@ -8,7 +8,7 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 def create_user(db: Session, user: schemas.UserCreate):
-    hashed_password = user.password  # Hash the password here, for production
+    hashed_password = user.password  # todo : Hash the password here, for production
     db_user = models.User(email=user.email, fullname=user.fullname, hashed_password=hashed_password)
     db.add(db_user)
     db.commit()

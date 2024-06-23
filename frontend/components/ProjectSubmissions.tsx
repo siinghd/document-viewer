@@ -18,6 +18,7 @@ import { Button } from './ui/button';
 import Image from 'next/image';
 import { getColorForScore, getRating } from '@/lib/utils';
 import { FileUpload } from './FileUpload';
+import TableRowClickable from './table/TableRowSubmissionClickable';
 
 const ProjectSubmissions = ({ documents, searchParams, projectId }: any) => {
   if (!searchParams.displayType) searchParams.displayType = 'grid';
@@ -127,41 +128,9 @@ const ProjectSubmissions = ({ documents, searchParams, projectId }: any) => {
               </tr>
             </thead>
             <tbody className=" divide-y divide-gray-200">
-              {documents.documents.map((doc: any, index: number) => {
-                const rating = getRating(doc.overall_score);
-                const bgColor = getColorForScore(doc.overall_score);
-                return (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap flex items-center pl-0">
-                      <Image
-                        loading="lazy"
-                        src="/images/pdficon.png"
-                        className="shrink-0 my-auto w-5 aspect-[1.05]"
-                        alt={`${doc.name}'s avatar`}
-                        width={20}
-                        height={19}
-                      />
-                      <span className="ml-4">{doc.user.fullname}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap pl-0">
-                      {dayjs(doc.created_at).format('h:mmA M/D/YY')}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500 pl-0">
-                      {doc.status}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap pl-0">
-                      <Badge
-                        className={`m-auto relative justify-center  py-1.5 mb-3 rounded-xl ${bgColor.replace(
-                          '500',
-                          '100'
-                        )} ${bgColor.replace('bg', 'text')}`}
-                      >
-                        {rating}
-                      </Badge>
-                    </td>
-                  </tr>
-                );
-              })}
+              {documents.documents.map((doc: any) => (
+                <TableRowClickable doc={doc} key={doc.id} />
+              ))}
             </tbody>
           </table>
         </div>
