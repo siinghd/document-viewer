@@ -39,12 +39,10 @@ export function FileUpload({ projectId }: { projectId: number }) {
     setUploadStatus('uploading');
 
     try {
-      console.log(
-        process.env.NEXT_PUBLIC_API_URL,
-        `${apiUrl}/v1/documents/upload/${projectId}/`
-      );
       const response = await fetch(
-        `${apiUrl}/v1/documents/upload/${projectId}/`,
+        `${
+          process.env.NEXT_PUBLIC_API_URL_CLIENT || apiUrl
+        }/v1/documents/upload/${projectId}/`,
         {
           method: 'POST',
           body: bodyContent,
@@ -94,6 +92,7 @@ export function FileUpload({ projectId }: { projectId: number }) {
         <DialogFooter>
           <div className="flex flex-col">
             <Button
+              className='bg-sky-500'
               type="button"
               onClick={handleSubmit}
               disabled={uploadStatus === 'uploading'}
