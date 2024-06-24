@@ -20,7 +20,6 @@ https://frontdoc.hsingh.site/projects
     - [Seeding Without Docker](#seeding-without-docker)
     - [Seeding With Docker](#seeding-with-docker)
   - [Running with Docker](#running-with-docker)
-  - [API Documentation](#api-documentation)
 
 ## Features
 
@@ -190,6 +189,3 @@ https://frontdoc.hsingh.site/projects
    - Backend: `http://localhost:5001`
    - Frontend: `http://localhost:3000`
 
-## API Documentation
-
-- The API documentation is available at `http://localhost:5001/docs` when the backend server is running.
