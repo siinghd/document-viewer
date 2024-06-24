@@ -58,10 +58,10 @@ const ProjectPage = async ({
     <div className="flex flex-col bg-white">
       <main className="flex flex-col items-start self-center px-7 pt-7 pb-20 mt-4 max-w-full bg-gray-50 rounded-3xl w-[1300px] max-md:pr-5">
         <div className="flex gap-5 justify-between ml-3.5 w-full  max-md:flex-wrap">
-          <h1 className="my-auto text-xl font-medium text-black">
+          <h1 className="my-auto text-xl font-medium text-black flex-1">
             {jsonProject.name}
           </h1>
-          <nav className="flex gap-5 justify-between text-sm whitespace-nowrap bg-white rounded-md border border-solid border-zinc-100">
+          <nav className="flex gap-5 justify-between text-sm whitespace-nowrap bg-white rounded-md border border-solid border-zinc-100 flex-1">
             <div className="flex gap-0">
               <Link
                 className={`justify-center px-7 py-2.5   rounded-l-md border  border-neutral-100 border-solid max-md:px-5 ${
@@ -114,7 +114,7 @@ const ProjectPage = async ({
               </Link>
             </div>
           </nav>
-          <div></div>
+          <div className="flex-1"></div>
         </div>
         {(searchParams.tabType === undefined ||
           searchParams.tabType === TabType.dashboard) && (

@@ -180,7 +180,7 @@ https://frontdoc.hsingh.site/projects
 2. Modify  the `ENV VARS` in docker compose file  for the backend:
 
    ```sh
-   DATABASE_URL=postgresql://postgres:postgres@db:5432/app
+   DATABASE_URL=postgresql://postgres:postgres@db:5432/app 
    SECRET_KEY=your_secret_key
    ALGORITHM=HS256
    ACCESS_TOKEN_EXPIRE_MINUTES=30
