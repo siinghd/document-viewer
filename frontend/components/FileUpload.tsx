@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { revalidateRouter } from '@/actions';
+import { apiUrl } from '@/lib/utils';
 
 export function FileUpload({ projectId }: { projectId: number }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -38,8 +39,12 @@ export function FileUpload({ projectId }: { projectId: number }) {
     setUploadStatus('uploading');
 
     try {
+      console.log(
+        process.env.NEXT_PUBLIC_API_URL,
+        `${apiUrl}/v1/documents/upload/${projectId}/`
+      );
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/documents/upload/${projectId}/`,
+        `${apiUrl}/v1/documents/upload/${projectId}/`,
         {
           method: 'POST',
           body: bodyContent,

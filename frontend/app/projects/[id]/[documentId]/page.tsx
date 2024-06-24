@@ -3,17 +3,18 @@ import { DocumentDropDown } from '@/components/DocumentDropDown';
 
 import ResultItem from '@/components/ResultItem';
 import ScoreCard from '@/components/ScoreCard';
-import { getColorForScore } from '@/lib/utils';
+import { apiUrl, getColorForScore } from '@/lib/utils';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import * as React from 'react';
+
 const DocViewer = dynamic(() => import('@/components/DocViewer'), {
   ssr: false,
 });
 
-export const revalidate = 1;
+export const revalidate = 60;
 
 const DocumentPage = async ({
   params,
@@ -21,10 +22,10 @@ const DocumentPage = async ({
   params: { id: string; documentId: string };
 }) => {
   const document = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/v1/documents/${params.documentId}`
+    `${apiUrl}/v1/documents/${params.documentId}`
   );
   const documentsProject = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/v1/projects/${params.id}/documents?fields=id,name&limit=1000`
+    `${apiUrl}/v1/projects/${params.id}/documents?fields=id,name&limit=1000`
   );
   const data = await document.json();
   const projects = await documentsProject.json();

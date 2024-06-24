@@ -3,6 +3,9 @@ const nextConfig = {
   experimental: {
     esmExternals: true,
     reactCompiler: true,
+    serverActions: {
+      bodySizeLimit: '50mb',
+    },
   },
 
   webpack: (config) => {
@@ -11,6 +14,9 @@ const nextConfig = {
       '.js': ['.js', '.ts', '.tsx'],
     };
     return config;
+  },
+  env: {
+    MY_VAR: process.env.NEXT_PUBLIC_API_URL,
   },
 };
 

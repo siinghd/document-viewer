@@ -1,9 +1,12 @@
+import { apiUrl } from '@/lib/utils';
 import Link from 'next/link';
 import React from 'react';
 
+export const dynamic = 'force-dynamic'; // for docker else use revalidate
+
 const page = async () => {
   const document = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/v1/projects`
+    `${apiUrl}/v1/projects`
   );
   const json = await document.json();
 

@@ -6,7 +6,8 @@ import { pdfjs, Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
-import type { PDFDocumentProxy } from 'pdfjs-dist';
+
+import { apiUrl } from '@/lib/utils';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.js',
@@ -42,7 +43,7 @@ export default function DocViewer({ id }: { id: number }) {
 
   function onDocumentLoadSuccess({
     numPages: nextNumPages,
-  }: PDFDocumentProxy): void {
+  }: any): void {
     setNumPages(nextNumPages);
   }
   const goToPreviousPage = () => {
@@ -56,7 +57,7 @@ export default function DocViewer({ id }: { id: number }) {
     <div className="Example max-h-[813px] overflow-y-scroll">
       <div ref={setContainerRef}>
         <Document
-          file={`${process.env.NEXT_PUBLIC_API_URL}/v1/documents/${id}/file`}
+          file={`${apiUrl}/v1/documents/${id}/file`}
           onLoadSuccess={onDocumentLoadSuccess}
           options={options}
         >

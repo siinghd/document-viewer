@@ -3,6 +3,7 @@ import ProjectDashboard from '@/components/ProjectDashboard';
 import ProjectSubmissions from '@/components/ProjectSubmissions';
 
 import { getUpdatedUrl } from '@/lib/functions';
+import { apiUrl } from '@/lib/utils';
 
 import { QueryParams, TabType } from '@/types';
 
@@ -19,9 +20,7 @@ const ProjectPage = async ({
   params: { id: string };
   searchParams: QueryParams;
 }) => {
-  const project = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/v1/projects/${params.id}`
-  );
+  const project = await fetch(`${apiUrl}/v1/projects/${params.id}`);
   const jsonProject = await project.json();
   if (jsonProject.detail) return redirect(`/projects`);
 
@@ -33,17 +32,17 @@ const ProjectPage = async ({
   ) {
     const [document, statsData] = await Promise.all([
       fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/projects/${jsonProject.id}/documents`
+        `${apiUrl}/v1/projects/${jsonProject.id}/documents`
       ),
       fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/v1/projects/${jsonProject.id}/stats`
+        `${apiUrl}/v1/projects/${jsonProject.id}/stats`
       ),
     ]);
 
     [data, stats] = await Promise.all([document.json(), statsData.json()]);
   } else if (searchParams.tabType === TabType.submissions) {
     const document = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/projects/${
+      `${apiUrl}/v1/projects/${
         jsonProject.id
       }/documents?limit=${searchParams.limit ?? 15}&skip=${
         ((searchParams.page ?? 1) - 1) * (searchParams.limit ?? 15)

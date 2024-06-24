@@ -22,6 +22,10 @@ app.add_middleware(
 )
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 @app.exception_handler(Exception)
 async def validation_exception_handler(request: Request, exc: Exception):
     return JSONResponse(

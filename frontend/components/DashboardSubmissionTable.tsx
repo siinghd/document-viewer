@@ -10,9 +10,10 @@ import React from 'react';
 
 import TableRowDashBoardClicable from './table/TableRowDashBoardClicable';
 const DashboardSubmissionTable = ({ documents }: any) => {
+
   return (
     <div className="overflow-x-auto">
-      {documents.length === 0 ? (
+      {documents.documents.length === 0 ? (
         <div className="text-center text-lg text-gray-500">
           No submissions yet
         </div>
