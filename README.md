@@ -117,12 +117,12 @@ https://frontdoc.hsingh.site/projects
    Create a `.env` file in the `frontend` directory with the following content:
 
    ```sh
-   NEXT_PUBLIC_API_URL=http://localhost:5001/api/v1
+   NEXT_PUBLIC_API_URL=http://127.0.0.1:5001/api/v1
 
    # For Docker, uncomment this and comment the first one
    # NEXT_PUBLIC_API_URL=http://backend:5001/api 
 
-   NEXT_PUBLIC_API_URL_CLIENT=http://localhost:5001/api 
+   NEXT_PUBLIC_API_URL_CLIENT=http://127.0.0.1:5001/api 
    ```
 
 4. Start the frontend development server:
@@ -194,9 +194,9 @@ https://frontdoc.hsingh.site/projects
    # NEXT_PUBLIC_API_URL=http://backend:5001/api/v1
 
    # Uncomment this line and comment the first one for local development
-   NEXT_PUBLIC_API_URL=http://localhost:5001/api 
+   NEXT_PUBLIC_API_URL=http://127.0.0.1:5001/api 
 
-   NEXT_PUBLIC_API_URL_CLIENT=http://localhost:5001/api
+   NEXT_PUBLIC_API_URL_CLIENT=http://127.0.0.1:5001/api
    EOL
    ```
 
